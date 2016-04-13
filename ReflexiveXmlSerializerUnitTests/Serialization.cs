@@ -7,7 +7,7 @@ using System.Xml;
 namespace ReflexiveXmlSerializerUnitTests
 {
     [TestClass]
-    public class UnitTest1
+    public class Serialization
     {
         [TestMethod]
         public void SerializeTest()
