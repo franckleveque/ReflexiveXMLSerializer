@@ -62,10 +62,10 @@ namespace ReflexiveXmlSerializerUnitTests
         public void SimpleObjectTest()
         {
             string xml = @"<SimpleTest><Id>1</Id><Name>Franck</Name><BirthDate>1978-9-16</BirthDate></SimpleTest>";
-            ReflexiveXMLSerializer.ReflexiveXmlDeserializer des = new ReflexiveXMLSerializer.ReflexiveXmlDeserializer(typeof(SimpleTest));
+            ReflexiveXMLSerializer.ReflexiveXmlDeserializer des = new ReflexiveXMLSerializer.ReflexiveXmlDeserializer(typeof(SimpleSample));
             var t = des.Deserialize(xml);
-            Assert.IsInstanceOfType(t, typeof(SimpleTest));
-            var test = (SimpleTest)t;
+            Assert.IsInstanceOfType(t, typeof(SimpleSample));
+            var test = (SimpleSample)t;
             Assert.AreEqual(1, test.Id);
             Assert.AreEqual("Franck", test.Name);
             Assert.AreEqual(new DateTime(1978,9,16), test.BirthDate);
@@ -75,10 +75,10 @@ namespace ReflexiveXmlSerializerUnitTests
         public void ObjectArrayTest()
         {
             string xml = @"<ObjectArrayTest><Id>1</Id><Friends><SimpleTest><Id>1</Id><Name>Franck</Name><BirthDate>1978-9-16</BirthDate></SimpleTest></Friends></ObjectArrayTest>";
-            ReflexiveXMLSerializer.ReflexiveXmlDeserializer des = new ReflexiveXMLSerializer.ReflexiveXmlDeserializer(typeof(ObjectArrayTest));
+            ReflexiveXMLSerializer.ReflexiveXmlDeserializer des = new ReflexiveXMLSerializer.ReflexiveXmlDeserializer(typeof(ObjectArraySample));
             var t = des.Deserialize(xml);
-            Assert.IsInstanceOfType(t, typeof(ObjectArrayTest));
-            var test = (ObjectArrayTest)t;
+            Assert.IsInstanceOfType(t, typeof(ObjectArraySample));
+            var test = (ObjectArraySample)t;
             Assert.AreEqual(1, test.Id);
             //CollectionAssert.AreEqual(new string[] { "varaxor@free.fr", "leveque.franck@gmail.com", "franck.leveque2@free.fr" }, test.Mails);
         }
@@ -87,31 +87,12 @@ namespace ReflexiveXmlSerializerUnitTests
         public void SimpleArrayTest()
         {
             string xml = @"<SimpleTest><Id>1</Id><Mails><String>varaxor@free.fr</String><String>leveque.franck@gmail.com</String><String>franck.leveque2@free.fr</String></Mails></SimpleTest>";
-            ReflexiveXMLSerializer.ReflexiveXmlDeserializer des = new ReflexiveXMLSerializer.ReflexiveXmlDeserializer(typeof(SimpleArrayTest));
+            ReflexiveXMLSerializer.ReflexiveXmlDeserializer des = new ReflexiveXMLSerializer.ReflexiveXmlDeserializer(typeof(SimpleArraySample));
             var t = des.Deserialize(xml);
-            Assert.IsInstanceOfType(t, typeof(SimpleArrayTest));
-            var test = (SimpleArrayTest)t;
+            Assert.IsInstanceOfType(t, typeof(SimpleArraySample));
+            var test = (SimpleArraySample)t;
             Assert.AreEqual(1, test.Id);
             CollectionAssert.AreEqual(new string[] { "varaxor@free.fr", "leveque.franck@gmail.com", "franck.leveque2@free.fr" }, test.Mails);
         }
-    }
-
-    public class SimpleTest
-    {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public DateTime BirthDate { get; set; }
-    }
-
-    public class SimpleArrayTest
-    {
-        public int Id { get; set; }
-        public string[] Mails { get; set; }
-    }
-
-    public class ObjectArrayTest
-    {
-        public int Id { get; set; }
-        public SimpleTest[] Friends { get; set; }
     }
 }
