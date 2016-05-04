@@ -59,10 +59,49 @@ namespace ReflexiveXmlSerializerUnitTests
         #endregion
 
         [TestMethod]
-        public void TestMethod1()
+        public void SimpleObjectTest()
         {
+            string xml = @"<SimpleTest><Id>1</Id><Name>Franck</Name><BirthDate>1978-9-16</BirthDate></SimpleTest>";
+            ReflexiveXMLSerializer.ReflexiveXmlDeserializer des = new ReflexiveXMLSerializer.ReflexiveXmlDeserializer(typeof(SimpleTest));
+            var t = des.Deserialize(xml);
+            Assert.IsInstanceOfType(t, typeof(SimpleTest));
+            var test = (SimpleTest)t;
+            Assert.AreEqual(1, test.Id);
+            Assert.AreEqual("Franck", test.Name);
+            Assert.AreEqual(new DateTime(1978,9,16), test.BirthDate);
+        }
 
+        [TestMethod]
+        public void SimpleArrayTest()
+        {
+            string xml = @"<SimpleTest><Id>1</Id><Mails><String>varaxor@free.fr</String><String>leveque.franck@gmail.com</String><String>franck.leveque2@free.fr</String></Mails></SimpleTest>";
+            ReflexiveXMLSerializer.ReflexiveXmlDeserializer des = new ReflexiveXMLSerializer.ReflexiveXmlDeserializer(typeof(SimpleArrayTest));
+            var t = des.Deserialize(xml);
+            Assert.IsInstanceOfType(t, typeof(SimpleArrayTest));
+            var test = (SimpleArrayTest)t;
+            Assert.AreEqual(1, test.Id);
+            Assert.AreEqual(new string[] { "varaxor@free.fr", "leveque.franck@gmail.com", "franck.leveque2@free.fr" }, test.Mails);
         }
     }
 
+    public class SimpleTest
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public DateTime BirthDate { get; set; }
+        public SimpleTest() { }
+    }
+
+    public class SimpleArrayTest
+    {
+        public int Id { get; set; }
+        public string[] Mails { get; set; }
+    }
+
+    public class ObjectArrayTest
+    {
+        public int Id { get; set; }
+        public SimpleTest[] Friends { get; set; }
+        public ObjectArrayTest() { }
+    }
 }
