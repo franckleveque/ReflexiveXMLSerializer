@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -67,7 +68,7 @@ namespace ReflexiveXMLSerializer
             }
             else
             {
-                foreach (var c in references[root])
+                foreach (var c in references[objectType])
                 {
                     // Serialize elements
                     if (c.Item2)
@@ -78,35 +79,45 @@ namespace ReflexiveXMLSerializer
                     else
                     {
                         Type propType = c.Item4;
-                            if (!Utility.IsBaseType(propType) && propType.GetInterfaces().Contains(typeof(System.Collections.IEnumerable)))
+                        if (!Utility.IsBaseType(propType) && propType.GetInterfaces().Contains(typeof(System.Collections.IEnumerable)))
+                        {
+                            // Instanciate a list of these elements
+                            Type elementType = propType.GetElementType();
+                            List<object> buffer = new List<object>();
+                            foreach (var d in elem.Element(c.Item3).Elements())
                             {
-                                // Instanciate a list of these elements
-                                List<object> buffer = new List<object>();
-                                foreach (var d in elem.Element(c.Item3).Elements())
+                                if (Utility.IsBaseType(elementType))
                                 {
-                                    if (Utility.IsBaseType(c.Item4.GetElementType()))
-                                    {
-                                        buffer.Add(Convert.ChangeType(d.Value, propType.GetElementType()));
-                                    }
-                                    else
-                                    {
-                                        buffer.Add(this.DeserializeObject(propType.GetElementType(), d));
-                                    }
-                                }
-
-                                if (propType.IsArray)
-                                {
-                                    c.Item1.SetValue(result,buffer.ToArray());
+                                    buffer.Add(Convert.ChangeType(d.Value, elementType));
                                 }
                                 else
                                 {
-                                    c.Item1.SetValue(result, buffer);
+                                    buffer.Add(this.DeserializeObject(elementType, d));
                                 }
+                            }
+
+
+                            MethodInfo castMethod = typeof(Enumerable).GetMethod("Cast")
+                                .MakeGenericMethod(new System.Type[] { elementType });
+                            MethodInfo toArrayMethod = null;
+                            if (propType.IsArray)
+                            {
+                                toArrayMethod = typeof(Enumerable).GetMethod("ToArray")
+                                .MakeGenericMethod(new System.Type[] { elementType });
                             }
                             else
                             {
-                                c.Item1.SetValue(result, Convert.ChangeType(elem.Element(c.Item3).Value, propType));
+                                toArrayMethod = typeof(Enumerable).GetMethod("ToList")
+                                    .MakeGenericMethod(new System.Type[] { elementType });
                             }
+                            var castedObjectEnum = castMethod.Invoke(null, new object[] { buffer });
+                            c.Item1.SetValue(result, toArrayMethod.Invoke(null, new object[] { castedObjectEnum }));
+
+                        }
+                        else
+                        {
+                            c.Item1.SetValue(result, Convert.ChangeType(elem.Element(c.Item3).Value, propType));
+                        }
                     }
 
                 }

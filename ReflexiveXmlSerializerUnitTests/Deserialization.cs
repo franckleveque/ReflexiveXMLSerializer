@@ -72,6 +72,18 @@ namespace ReflexiveXmlSerializerUnitTests
         }
 
         [TestMethod]
+        public void ObjectArrayTest()
+        {
+            string xml = @"<ObjectArrayTest><Id>1</Id><Friends><SimpleTest><Id>1</Id><Name>Franck</Name><BirthDate>1978-9-16</BirthDate></SimpleTest></Friends></ObjectArrayTest>";
+            ReflexiveXMLSerializer.ReflexiveXmlDeserializer des = new ReflexiveXMLSerializer.ReflexiveXmlDeserializer(typeof(ObjectArrayTest));
+            var t = des.Deserialize(xml);
+            Assert.IsInstanceOfType(t, typeof(ObjectArrayTest));
+            var test = (ObjectArrayTest)t;
+            Assert.AreEqual(1, test.Id);
+            //CollectionAssert.AreEqual(new string[] { "varaxor@free.fr", "leveque.franck@gmail.com", "franck.leveque2@free.fr" }, test.Mails);
+        }
+
+        [TestMethod]
         public void SimpleArrayTest()
         {
             string xml = @"<SimpleTest><Id>1</Id><Mails><String>varaxor@free.fr</String><String>leveque.franck@gmail.com</String><String>franck.leveque2@free.fr</String></Mails></SimpleTest>";
@@ -80,7 +92,7 @@ namespace ReflexiveXmlSerializerUnitTests
             Assert.IsInstanceOfType(t, typeof(SimpleArrayTest));
             var test = (SimpleArrayTest)t;
             Assert.AreEqual(1, test.Id);
-            Assert.AreEqual(new string[] { "varaxor@free.fr", "leveque.franck@gmail.com", "franck.leveque2@free.fr" }, test.Mails);
+            CollectionAssert.AreEqual(new string[] { "varaxor@free.fr", "leveque.franck@gmail.com", "franck.leveque2@free.fr" }, test.Mails);
         }
     }
 
@@ -89,7 +101,6 @@ namespace ReflexiveXmlSerializerUnitTests
         public int Id { get; set; }
         public string Name { get; set; }
         public DateTime BirthDate { get; set; }
-        public SimpleTest() { }
     }
 
     public class SimpleArrayTest
@@ -102,6 +113,5 @@ namespace ReflexiveXmlSerializerUnitTests
     {
         public int Id { get; set; }
         public SimpleTest[] Friends { get; set; }
-        public ObjectArrayTest() { }
     }
 }
