@@ -34,6 +34,12 @@ namespace ReflexiveXMLSerializer
                         {
                             // We have a collection
                             var typeToCheck = curProp.PropertyType.GetElementType();
+                            if (typeToCheck == null)
+                            {
+                                // We are in a List
+                                typeToCheck = curProp.PropertyType.GenericTypeArguments[0];
+                            }
+
                             if (!Utility.IsBaseType(typeToCheck))
                             {
                                 AddTypeToReferences(typeToCheck);
@@ -83,6 +89,12 @@ namespace ReflexiveXMLSerializer
                         {
                             // Instanciate a list of these elements
                             Type elementType = propType.GetElementType();
+                            if (elementType == null)
+                            { 
+                                // We are in a List
+                                elementType = propType.GetGenericArguments()[0];
+                            }
+
                             List<object> buffer = new List<object>();
                             foreach (var d in elem.Element(c.Item3).Elements())
                             {
@@ -116,7 +128,21 @@ namespace ReflexiveXMLSerializer
                         }
                         else
                         {
-                            c.Item1.SetValue(result, Convert.ChangeType(elem.Element(c.Item3).Value, propType));
+                            if (propType.IsEnum)
+                            {
+                                c.Item1.SetValue(result, Enum.Parse(c.Item1.PropertyType, elem.Element(c.Item3).Value));
+                            }
+                            else if (propType.IsGenericType && propType.GetGenericTypeDefinition().Equals(typeof(Nullable<>)))
+                            {
+                                if (!string.IsNullOrEmpty(elem.Element(c.Item3).Value))
+                                {
+                                    c.Item1.SetValue(result, Convert.ChangeType(elem.Element(c.Item3).Value, Nullable.GetUnderlyingType(propType), System.Globalization.CultureInfo.InvariantCulture));
+                                }
+                            }
+                            else
+                            {
+                                c.Item1.SetValue(result, Convert.ChangeType(elem.Element(c.Item3).Value, propType, System.Globalization.CultureInfo.InvariantCulture));
+                            }
                         }
                     }
 

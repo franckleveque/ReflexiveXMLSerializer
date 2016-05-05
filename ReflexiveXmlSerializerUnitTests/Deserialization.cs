@@ -2,6 +2,10 @@
 using System.Text;
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using ForInLineBot;
+using NeuralNet.Serialization;
+using System.Xml.Serialization;
+using System.IO;
 
 namespace ReflexiveXmlSerializerUnitTests
 {
@@ -93,6 +97,17 @@ namespace ReflexiveXmlSerializerUnitTests
             var test = (SimpleArraySample)t;
             Assert.AreEqual(1, test.Id);
             CollectionAssert.AreEqual(new string[] { "varaxor@free.fr", "leveque.franck@gmail.com", "franck.leveque2@free.fr" }, test.Mails);
+        }
+
+        [TestMethod]
+        public void NeuralTest()
+        {
+            string xml = NeuralData.Data;
+            ReflexiveXMLSerializer.ReflexiveXmlDeserializer des = new ReflexiveXMLSerializer.ReflexiveXmlDeserializer(typeof(Network));
+            var t = des.Deserialize(xml);
+            XmlSerializer xs = new XmlSerializer(typeof(Network));
+            Network b = (Network)xs.Deserialize(new MemoryStream(Encoding.ASCII.GetBytes(xml)));
+            Assert.AreEqual(b, t);
         }
     }
 }

@@ -52,6 +52,11 @@
   </Choose>
   <ItemGroup>
     <Compile Include="Deserialization.cs" />
+    <Compile Include="Neural\Network.cs" />
+    <Compile Include="Neural\NeuralData.cs" />
+    <Compile Include="Neural\Neuron.cs" />
+    <Compile Include="Neural\Point.cs" />
+    <Compile Include="Neural\WeightedLink.cs" />
     <Compile Include="SampleTypes.cs" />
     <Compile Include="Serialization.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
