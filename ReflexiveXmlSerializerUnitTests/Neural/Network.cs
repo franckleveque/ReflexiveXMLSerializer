@@ -11,8 +11,8 @@ namespace NeuralNet.Serialization
         public string Name { get; set; }
         public List<Neuron> Neurons { get; set; }
         public double? TrueError { get; set; }
-        public List<Point> ErrorHistory = new List<Point>();
-        public List<int> HiddensLayout = new List<int>();
+        public List<Point> ErrorHistory { get; set; }
+        public List<int> HiddensLayout { get; set; }
 
         public double InitialWeightInterval1 { get; set; }
         public double InitialWeightInterval2 { get; set; }
