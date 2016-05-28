@@ -51,6 +51,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="DeserializationXmlDoc.cs" />
     <Compile Include="Deserialization.cs" />
     <Compile Include="Neural\Network.cs" />
     <Compile Include="Neural\NeuralData.cs" />

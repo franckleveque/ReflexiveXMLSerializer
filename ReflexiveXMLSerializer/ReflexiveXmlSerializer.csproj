@@ -41,6 +41,7 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReflectiveXmlSerializer.cs" />
+    <Compile Include="ReflexiveXmlDocDeserializer.cs" />
     <Compile Include="ReflexiveXmlDeserializer.cs" />
     <Compile Include="Utility.cs" />
   </ItemGroup>
